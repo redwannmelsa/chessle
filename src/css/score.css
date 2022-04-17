@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #090909c9;
+    max-width: 500px;
+    margin: auto;
+    border-radius: 1rem;
+    animation-name: fadeIn;
+    animation-duration: 0.3s;
+    margin-top: 0rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+#statistics {
+    display: flex;
+}
+
+.statistic-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.statistic {
+    justify-content: center;
+    display: flex;
+}
+
+.label {
+    font-size: small;
+}
+
+@keyframes fadeIn {
+    from {
+        margin-top: -1rem;
+        opacity: 0.5;
+    }
+    to {
+        margin-top: 0rem;
+        opacity: 1;
+    }
+}
