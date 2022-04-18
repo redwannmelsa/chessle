@@ -4,6 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 
 import Navbar from './components/Navbar'
+import Checkbox from './components/Checkbox'
 
 import "./css/App.css";
 
@@ -24,11 +25,11 @@ const App = () => {
   }
 
   function makeNewMove() {
-    if (game.game_over() || game.in_draw())
-      return setIsScoreOpen(true); // exit if the game is over
     const moveSet = [
-      'c5', 'd6', 'cxd4'
+      'c5', 'd6', 'cxd4', 'gameEnd'
     ]
+    if (moveSet[indexOfComputer] === 'gameEnd')
+      return setIsScoreOpen(true); // exit if the game is over
     safeGameMutate((game) => {
       game.move(moveSet[indexOfComputer])
       indexOfComputer += 1;
@@ -48,11 +49,12 @@ const App = () => {
   function onDrop(sourceSquare, targetSquare) {
     let move = null;
     const playerMoveSet = [
-      'e4', 'f3', 'd4', 'd4'
-    ]
-    console.log(playerMoveSet[indexOfPlayer])
-    console.log(targetSquare)
-    if (targetSquare == playerMoveSet[indexOfPlayer]) {
+      ['e2', 'e4'],
+      ['g1', 'f3'],
+      ['d2', 'd4'],
+      ['f3', 'd4']
+    ];
+    if (sourceSquare === playerMoveSet[indexOfPlayer][0] && targetSquare === playerMoveSet[indexOfPlayer][1]) {
       safeGameMutate((game) => {
         move = game.move({
           from: sourceSquare,
@@ -75,6 +77,7 @@ const App = () => {
       <div className="board">
        <Chessboard position={game.fen()} onPieceDrop={onDrop} />
       </div>
+      <Checkbox />
     </div>
   );
 };

@@ -1,0 +1,21 @@
+.grid-container {
+    display: flex;
+}
+
+.grid-item {
+    border: 2px solid rgb(117, 117, 117);
+    height: 50px;
+    width: 50px;
+    margin: 2px;
+    align-items: center; 
+    justify-content: center;
+    display: flex;
+}
+
+.fa-xmark {
+    color: red;
+}
+
+.fa-check {
+    color: rgb(0, 184, 0);
+}
