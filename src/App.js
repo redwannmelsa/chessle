@@ -15,6 +15,7 @@ const App = () => {
 
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [game, setGame] = useState(new Chess());
+  const [checkBox, setCheckBox] = useState([]);
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -25,6 +26,7 @@ const App = () => {
   }
 
   function makeNewMove() {
+    console.log(checkBox)
     const moveSet = [
       'c5', 'd6', 'cxd4', 'gameEnd'
     ]
@@ -65,19 +67,22 @@ const App = () => {
       if (move === null) return false; // illegal move
       setTimeout(makeNewMove, 200);
       indexOfPlayer++
+      setCheckBox([...checkBox, true])
       return true;
     } else {
       console.log('wrong move')
+      setCheckBox([...checkBox, false])
     }
   }
 
+  console.log(checkBox[0])
   return (
     <div className="App-header">
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
       <div className="board">
        <Chessboard position={game.fen()} onPieceDrop={onDrop} />
       </div>
-      <Checkbox />
+      <Checkbox checkBox={checkBox} />
     </div>
   );
 };
