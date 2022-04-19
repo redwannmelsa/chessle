@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
@@ -13,9 +13,22 @@ var indexOfPlayer = 0;
 
 const App = () => {
 
+  const [chessBoardSize, setChessBoardSize] = useState(undefined);
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [game, setGame] = useState(new Chess());
   const [checkBox, setCheckBox] = useState([]);
+
+  useEffect(() => {
+    function handleResize() {
+      const display = document.getElementsByClassName('App-header')[0];
+      setChessBoardSize(display.offsetWidth - 20);
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -26,7 +39,6 @@ const App = () => {
   }
 
   function makeNewMove() {
-    console.log(checkBox)
     const moveSet = [
       'c5', 'd6', 'cxd4', 'gameEnd'
     ]
@@ -70,17 +82,17 @@ const App = () => {
       setCheckBox([...checkBox, true])
       return true;
     } else {
-      console.log('wrong move')
       setCheckBox([...checkBox, false])
     }
   }
 
-  console.log(checkBox[0])
   return (
     <div className="App-header">
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
       <div className="board">
-       <Chessboard position={game.fen()} onPieceDrop={onDrop} />
+        {vw > 600
+          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} />
+          : <Chessboard position={game.fen()} onPieceDrop={onDrop} boardWidth={360} />}
       </div>
       <Checkbox checkBox={checkBox} />
     </div>

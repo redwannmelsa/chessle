@@ -34,11 +34,10 @@ navbar {
 }
 
 .board {
-  /* margin-left: auto;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  margin-left: auto;
   margin-right: auto;
-  margin-top: 10%;
-  margin-bottom: 7%; */
-  margin: auto;
 }
 
 button {

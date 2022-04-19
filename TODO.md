@@ -22,13 +22,13 @@
 
     hard code openings?
     looking into libraries
-    figure out how to tell the chess board how to set pieces
-    start with one then expand 
+    [x] figure out how to tell the chess board how to set pieces
+    [x] start with one then expand 
 
 # user can move a piece
 
-    if the move is correct => checkmark validation + maybe noise (?)
-    how to know if the move is correct? still hardcoding a list of move? or maybe library - look it up
+    [x] if the move is correct => checkmark validation + maybe noise (?)
+    [x] how to know if the move is correct? still hardcoding a list of move? or maybe library - look it up
     if the move is incorrect => red cross, 3 fails and you're out + link to relevant opening sequence
         later on, try to make it show up directly on the website, animate the opening + link
     
