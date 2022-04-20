@@ -9,17 +9,21 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         }
     }, true)
 
+    const gamesPlayed = () => {
+        return JSON.parse(localStorage.getItem('userScore')).length;
+    }
+
     return (
         <div className="container">
             <h3>Statistics</h3>
             <div id="statistics">
                 <div className="statistic-container">
                     <div className="statistic">
-                        34
+                        {gamesPlayed()}
                     </div>
-                    <div className="label" value='score'>Played</div>
+                    <div className="label">Played</div>
                 </div>
-                <div className="statistic-container" value='score'>
+                <div className="statistic-container">
                     <div className="statistic">
                         100
                     </div>

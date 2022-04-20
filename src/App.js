@@ -10,16 +10,31 @@ import "./css/App.css";
 
 var indexOfComputer = 0;
 var indexOfPlayer = 0;
+const moveSet = [
+  'c5', 'd6', 'cxd4', 'gameEnd'
+]
 
 const App = () => {
 
   const [chessBoardSize, setChessBoardSize] = useState(undefined);
-  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [game, setGame] = useState(new Chess());
   const [checkBox, setCheckBox] = useState([]);
 
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+  const boardOrientation = 'white'
+
   useEffect(() => {
+    if (isScoreOpen) {
+      if (localStorage.getItem('userScore')) {
+        let scoreArray = JSON.parse(localStorage.getItem('userScore'))
+      scoreArray.push(checkBox)
+      localStorage.setItem('userScore', JSON.stringify(scoreArray))
+      } else {
+        localStorage.setItem('userScore', JSON.stringify([checkBox]))
+      }
+      
+    }
     function handleResize() {
       const display = document.getElementsByClassName('App-header')[0];
       setChessBoardSize(display.offsetWidth - 20);
@@ -28,7 +43,7 @@ const App = () => {
     window.addEventListener('resize', handleResize);
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  });
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -39,26 +54,24 @@ const App = () => {
   }
 
   function makeNewMove() {
-    const moveSet = [
-      'c5', 'd6', 'cxd4', 'gameEnd'
-    ]
-    if (moveSet[indexOfComputer] === 'gameEnd')
+    if (moveSet[indexOfComputer] === 'gameEnd') {
       return setIsScoreOpen(true); // exit if the game is over
+    }
     safeGameMutate((game) => {
       game.move(moveSet[indexOfComputer])
       indexOfComputer += 1;
     })
   }
 
-  function makeRandomMove() {
-    const possibleMoves = game.moves();
-    if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
-      return setIsScoreOpen(true); // exit if the game is over
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-    safeGameMutate((game) => {
-      game.move(possibleMoves[randomIndex]);
-    });
-  }
+  // function makeRandomMove() {
+  //   const possibleMoves = game.moves();
+  //   if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
+  //     return setIsScoreOpen(true); // exit if the game is over
+  //   const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+  //   safeGameMutate((game) => {
+  //     game.move(possibleMoves[randomIndex]);
+  //   });
+  // }
 
   function onDrop(sourceSquare, targetSquare) {
     let move = null;
@@ -91,7 +104,7 @@ const App = () => {
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
       <div className="board">
         {vw > 600
-          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} />
+          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation}/>
           : <Chessboard position={game.fen()} onPieceDrop={onDrop} boardWidth={360} />}
       </div>
       <Checkbox checkBox={checkBox} />
