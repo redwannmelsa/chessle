@@ -13,6 +13,10 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         return JSON.parse(localStorage.getItem('userScore')).length;
     }
 
+    const winPercent = () => {
+        return Math.round((parseInt(localStorage.getItem('gamesWon'))/JSON.parse(localStorage.getItem('userScore')).length)*100);
+    }
+
     return (
         <div className="container">
             <h3>Statistics</h3>
@@ -25,7 +29,7 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
                 </div>
                 <div className="statistic-container">
                     <div className="statistic">
-                        100
+                        {winPercent()}
                     </div>
                     <div className="label">Win %</div>
                 </div>

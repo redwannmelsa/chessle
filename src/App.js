@@ -10,6 +10,7 @@ import "./css/App.css";
 
 var indexOfComputer = 0;
 var indexOfPlayer = 0;
+var wrongMoves = 0;
 const moveSet = [
   'c5', 'd6', 'cxd4', 'gameEnd'
 ]
@@ -54,7 +55,13 @@ const App = () => {
   }
 
   function makeNewMove() {
-    if (moveSet[indexOfComputer] === 'gameEnd') {
+    console.log(wrongMoves)
+    if (moveSet[indexOfComputer] === 'gameEnd' || wrongMoves === 3) {
+      if (localStorage.getItem('gamesWon') !== undefined) {
+        localStorage.setItem('gamesWon', parseInt(localStorage.getItem('gamesWon')) + 1)
+      } else {
+        localStorage.setItem('gamesWon', 1)
+      }
       return setIsScoreOpen(true); // exit if the game is over
     }
     safeGameMutate((game) => {
@@ -81,7 +88,7 @@ const App = () => {
       ['d2', 'd4'],
       ['f3', 'd4']
     ];
-    if (sourceSquare === playerMoveSet[indexOfPlayer][0] && targetSquare === playerMoveSet[indexOfPlayer][1]) {
+    if (sourceSquare === playerMoveSet[indexOfPlayer][0] && targetSquare === playerMoveSet[indexOfPlayer][1] && wrongMoves < 3) {
       safeGameMutate((game) => {
         move = game.move({
           from: sourceSquare,
@@ -95,7 +102,16 @@ const App = () => {
       setCheckBox([...checkBox, true])
       return true;
     } else {
-      setCheckBox([...checkBox, false])
+      if (wrongMoves === 3) {
+        return setIsScoreOpen(true); // exit if the game is over
+      } else {
+        setCheckBox([...checkBox, false])
+        wrongMoves++
+        if (wrongMoves === 3) {
+          return setIsScoreOpen(true);
+        }
+      }
+      
     }
   }
 
