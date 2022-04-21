@@ -23,9 +23,7 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
 
     const currentStreak = () => {
         let currentStreakInt = 0;
-        // console.log(JSON.parse(localStorage.getItem('userScore'))[0].filter(x => x === false).length)
         for (let i in JSON.parse(localStorage.getItem('userScore'))) {
-            console.log(JSON.parse(localStorage.getItem('userScore'))[i])
             if (JSON.parse(localStorage.getItem('userScore'))[i].filter(x => x === false).length === 3) {
                 currentStreakInt = 0;
             } else {
@@ -34,6 +32,7 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         }
         if (localStorage.getItem('userMaxStreak') && parseInt(localStorage.getItem('userMaxStreak')) < currentStreakInt) {
             localStorage.setItem('userMaxStreak', currentStreakInt)
+            console.log(localStorage.getItem('userMaxStreak'))
         }
         return currentStreakInt;
     }
