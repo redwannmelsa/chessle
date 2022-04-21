@@ -1,5 +1,5 @@
 {
-  "homepage":"http://redwannmelsa.github.io/chessle",
+  "homepage": "http://redwannmelsa.github.io/chessle",
   "name": "chessle",
   "version": "0.1.0",
   "private": true,
@@ -15,6 +15,7 @@
     "chess": "^0.6.0",
     "chess.js": "^0.13.0",
     "chessboardjsx": "^2.4.7",
+    "gh-pages": "^3.2.3",
     "react": "^18.0.0",
     "react-bootstrap": "^2.2.3",
     "react-chessboard": "^1.2.2",
