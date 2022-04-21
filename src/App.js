@@ -52,7 +52,9 @@ const App = () => {
       } else {
         localStorage.setItem('gamesWon', 1);
       }
-      localStorage.setItem('userMaxStreak', 1)
+      if (!localStorage.getItem('userMaxStreak')) {
+        localStorage.setItem('userMaxStreak', 1)
+      }
       
       return setIsScoreOpen(true); // exit if the game is over
     }

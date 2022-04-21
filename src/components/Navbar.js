@@ -4,7 +4,6 @@ import { faRankingStar, faGear } from "@fortawesome/free-solid-svg-icons";
 const Navbar = ({ isScoreOpen, setIsScoreOpen }) => {
 
     const showScore = () => {
-        console.log('show score');
         setIsScoreOpen(true)
     }
 
