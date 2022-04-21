@@ -8,6 +8,7 @@ import Checkbox from './components/Checkbox'
 
 import "./css/App.css";
 
+var checkBoxArray = [];
 var indexOfComputer = 0;
 var indexOfPlayer = 0;
 var wrongMoves = 0;
@@ -17,34 +18,13 @@ const moveSet = [
 
 const App = () => {
 
-  const [chessBoardSize, setChessBoardSize] = useState(undefined);
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [game, setGame] = useState(new Chess());
   const [checkBox, setCheckBox] = useState([]);
+  const [gameActive, setGameActive] = useState(null);
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const boardOrientation = 'white'
-
-  useEffect(() => {
-    if (isScoreOpen) {
-      if (localStorage.getItem('userScore')) {
-        let scoreArray = JSON.parse(localStorage.getItem('userScore'))
-      scoreArray.push(checkBox)
-      localStorage.setItem('userScore', JSON.stringify(scoreArray))
-      } else {
-        localStorage.setItem('userScore', JSON.stringify([checkBox]))
-      }
-      
-    }
-    function handleResize() {
-      const display = document.getElementsByClassName('App-header')[0];
-      setChessBoardSize(display.offsetWidth - 20);
-    }
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  });
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -54,14 +34,26 @@ const App = () => {
     });
   }
 
+  const setUserScore = () => {
+      if (localStorage.getItem('userScore')) {
+        let scoreArray = JSON.parse(localStorage.getItem('userScore'))
+        scoreArray.push(checkBoxArray)
+        localStorage.setItem('userScore', JSON.stringify(scoreArray))
+      } else {
+        localStorage.setItem('userScore', JSON.stringify([checkBoxArray]))
+      }
+  }
+
   function makeNewMove() {
-    console.log(wrongMoves)
     if (moveSet[indexOfComputer] === 'gameEnd' || wrongMoves === 3) {
-      if (localStorage.getItem('gamesWon') !== undefined) {
+      setUserScore();
+      if (localStorage.getItem('gamesWon') !== null) {
         localStorage.setItem('gamesWon', parseInt(localStorage.getItem('gamesWon')) + 1)
       } else {
-        localStorage.setItem('gamesWon', 1)
+        localStorage.setItem('gamesWon', 1);
       }
+      localStorage.setItem('userMaxStreak', 1)
+      
       return setIsScoreOpen(true); // exit if the game is over
     }
     safeGameMutate((game) => {
@@ -69,16 +61,6 @@ const App = () => {
       indexOfComputer += 1;
     })
   }
-
-  // function makeRandomMove() {
-  //   const possibleMoves = game.moves();
-  //   if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
-  //     return setIsScoreOpen(true); // exit if the game is over
-  //   const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-  //   safeGameMutate((game) => {
-  //     game.move(possibleMoves[randomIndex]);
-  //   });
-  // }
 
   function onDrop(sourceSquare, targetSquare) {
     let move = null;
@@ -99,15 +81,18 @@ const App = () => {
       if (move === null) return false; // illegal move
       setTimeout(makeNewMove, 200);
       indexOfPlayer++
-      setCheckBox([...checkBox, true])
+      checkBoxArray = [...checkBox, true]
+      setCheckBox(checkBoxArray)
       return true;
     } else {
       if (wrongMoves === 3) {
         return setIsScoreOpen(true); // exit if the game is over
       } else {
-        setCheckBox([...checkBox, false])
+        checkBoxArray = [...checkBox, false]
+        setCheckBox(checkBoxArray)
         wrongMoves++
         if (wrongMoves === 3) {
+          setUserScore();
           return setIsScoreOpen(true);
         }
       }
