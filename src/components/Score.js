@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import '../css/score.css'
 
 const Score = ({ isScoreOpen, setIsScoreOpen }) => {
+
+    useEffect(() => {
+        oneErrorPercent()
+    })
 
     document.body.addEventListener("click", function(e) {
         let el = e.target.className;
@@ -19,6 +24,27 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         if (localStorage.getItem('gamesWon') !== null && localStorage.getItem('userScore') !== null) {
             return Math.round((parseInt(localStorage.getItem('gamesWon'))/JSON.parse(localStorage.getItem('userScore')).length)*100);
         }
+    }
+
+    const oneErrorPercent = () => {
+        var zeroErrorInt = 0;
+        var oneErrorInt = 0;
+        var twoErrorsInt = 0;
+        var threeErrorsInt = 0;
+        var errorValuesArr = [];
+
+        for (let i in JSON.parse(localStorage.getItem('userScore'))) {
+            if (JSON.parse(localStorage.getItem('userScore'))[i].filter(x => x === false).length === 1) {
+                oneErrorInt++
+            } else if (JSON.parse(localStorage.getItem('userScore'))[i].filter(x => x === false).length === 2) {
+                twoErrorsInt++
+            } else if (JSON.parse(localStorage.getItem('userScore'))[i].filter(x => x === false).length === 3) {
+                threeErrorsInt++
+            } else {
+                zeroErrorInt++
+            }
+        }
+        return errorValuesArr = [zeroErrorInt, oneErrorInt, twoErrorsInt, threeErrorsInt]
     }
 
     const currentStreak = () => {
@@ -66,6 +92,33 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
                         {localStorage.getItem('userMaxStreak')}
                     </div>
                     <div className="label">Max streak</div>
+                </div>
+            </div>
+            <div className="distribution">
+                <h5>Error distribution</h5>
+                <div className="graph-container">
+                    <div className="distribution-label">0</div>
+                    <div className="graph-bar" style={{width:oneErrorPercent()[0]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{oneErrorPercent()[0]}</div>
+                    </div>
+                </div>
+                <div className="graph-container">
+                    <div className="distribution-label">1</div>
+                    <div className="graph-bar"  style={{width:oneErrorPercent()[1]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{oneErrorPercent()[1]}</div>
+                    </div>
+                </div>
+                <div className="graph-container">
+                    <div className="distribution-label">2</div>
+                    <div className="graph-bar"  style={{width:oneErrorPercent()[2]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{oneErrorPercent()[2]}</div>
+                    </div>
+                </div>
+                <div className="graph-container">
+                    <div className="distribution-label">3</div>
+                    <div className="graph-bar"  style={{width:oneErrorPercent()[3]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{oneErrorPercent()[3]}</div>
+                    </div>
                 </div>
             </div>
         </div>

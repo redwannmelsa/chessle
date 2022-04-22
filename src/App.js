@@ -5,6 +5,7 @@ import { Chess } from "chess.js";
 
 import Navbar from './components/Navbar'
 import Checkbox from './components/Checkbox'
+import moveSets from "./openings";
 
 import "./css/App.css";
 
@@ -12,9 +13,9 @@ var checkBoxArray = [];
 var indexOfComputer = 0;
 var indexOfPlayer = 0;
 var wrongMoves = 0;
-const moveSet = [
-  'c5', 'd6', 'cxd4', 'gameEnd'
-]
+var gameIndex = Math.floor(Math.random() * 5)
+
+const moveSet = moveSets.ComputerMoveSets[gameIndex]
 
 const App = () => {
 
@@ -25,6 +26,10 @@ const App = () => {
 
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const boardOrientation = 'white'
+
+  useEffect(() => {
+    
+  }, [])
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -66,12 +71,7 @@ const App = () => {
 
   function onDrop(sourceSquare, targetSquare) {
     let move = null;
-    const playerMoveSet = [
-      ['e2', 'e4'],
-      ['g1', 'f3'],
-      ['d2', 'd4'],
-      ['f3', 'd4']
-    ];
+    const playerMoveSet = moveSets.playerMoveSets[gameIndex]
     if (sourceSquare === playerMoveSet[indexOfPlayer][0] && targetSquare === playerMoveSet[indexOfPlayer][1] && wrongMoves < 3) {
       safeGameMutate((game) => {
         move = game.move({
@@ -105,6 +105,9 @@ const App = () => {
   return (
     <div className="App-header">
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
+      <h5>Today's Chessle is:</h5>
+      <h2>{moveSets.nameOfOpening[gameIndex]}</h2>
+      <h3>{moveSets.nameOfVariation[gameIndex]}</h3>
       <div className="board">
         {vw > 600
           ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation}/>
