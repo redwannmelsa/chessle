@@ -63,7 +63,8 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         }
 
         const today = new Date();
-        navigator.clipboard.writeText('Chessle ' + today.getDate() + '/' + today.getMonth() + '\n' + sharingArr)
+        console.log(parseInt(today.getMonth()) + 1)
+        navigator.clipboard.writeText('Chessle ' + today.getDate() + '/' + parseInt(today.getMonth() + 1) + '\n' + sharingArr)
         document.getElementsByClassName('alert')[0].style.display = 'flex';
         setTimeout(() => {
             document.getElementsByClassName('alert')[0].style.display = 'none';
