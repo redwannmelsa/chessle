@@ -6,6 +6,7 @@ import { useCookies } from "react-cookie";
 
 import Navbar from './components/Navbar'
 import Checkbox from './components/Checkbox'
+import { key } from "./key";
 
 import "./css/App.css";
 
@@ -34,7 +35,7 @@ const App = () => {
       method: 'GET',
       headers: {
         'X-RapidAPI-Host': 'chess-puzzles.p.rapidapi.com',
-        'X-RapidAPI-Key': '4c1cde3e81msh8f8976e7637759bp14d06cjsn7a3c58b947b1'
+        'X-RapidAPI-Key': key
       }
     };
     console.log(document.cookie)

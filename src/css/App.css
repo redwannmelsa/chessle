@@ -70,3 +70,9 @@ h5 {
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 600px) {
+  .board {
+    margin-top: 10rem !important;
+  }
+}
