@@ -6,7 +6,7 @@ import { useCookies } from "react-cookie";
 
 import Navbar from './components/Navbar'
 import Checkbox from './components/Checkbox'
-import { key } from "./key";
+import { key } from "./key/key";
 
 import "./css/App.css";
 
