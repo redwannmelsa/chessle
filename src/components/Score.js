@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import '../css/score.css'
 
 const Score = ({ isScoreOpen, setIsScoreOpen }) => {
@@ -9,7 +11,7 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
 
     document.body.addEventListener("click", function(e) {
         let el = e.target.className;
-        if (el !== "container" && el !== "statistic-container" && el !== "statistic" && el !== "label") {
+        if (el !== "container" && el !== "statistic-container" && el !== "statistic" && el !== "label" && el !== 'share-container' && el !== 'share-button' && el !== 'svg-inline--fa fa-share-nodes share-button') {
             setIsScoreOpen(false)
         }
     }, true)
@@ -47,6 +49,27 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         return errorValuesArr = [zeroErrorInt, oneErrorInt, twoErrorsInt, threeErrorsInt]
     }
 
+    const onShareClick = () => {
+        let sharingArr = ""
+        // console.log(JSON.parse(localStorage.getItem('userScore')).length)
+        // console.log(JSON.parse(localStorage.getItem('userScore'))[JSON.parse(localStorage.getItem('userScore')).length - 1])
+        for (let element in JSON.parse(localStorage.getItem('userScore'))[JSON.parse(localStorage.getItem('userScore')).length - 1]) {
+            // console.log(JSON.parse(localStorage.getItem('userScore'))[JSON.parse(localStorage.getItem('userScore')).length - 1][element])
+            if (JSON.parse(localStorage.getItem('userScore'))[JSON.parse(localStorage.getItem('userScore')).length - 1][element] === false) {
+                sharingArr += '🟥'
+            } else {
+                sharingArr += '🟩'
+            }
+        }
+
+        const today = new Date();
+        navigator.clipboard.writeText('Chessle ' + today.getDate() + '/' + today.getMonth() + '\n' + sharingArr)
+        document.getElementsByClassName('alert')[0].style.display = 'flex';
+        setTimeout(() => {
+            document.getElementsByClassName('alert')[0].style.display = 'none';
+        }, 2000);
+    }
+
     const currentStreak = () => {
         let currentStreakInt = 0;
         for (let i in JSON.parse(localStorage.getItem('userScore'))) {
@@ -65,6 +88,9 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
 
     return (
         <div className="container">
+            <div class="alert">
+                Score copied to clipboard!
+            </div> 
             <h3>Statistics</h3>
             <div id="statistics">
                 <div className="statistic-container">
@@ -120,6 +146,11 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
                         <div className="num-errors">{oneErrorPercent()[3]}</div>
                     </div>
                 </div>
+            </div>
+            <div className="share-container">
+                <button class='share-button' onClick={() => onShareClick()}>
+                    Share
+                </button>
             </div>
         </div>
     )

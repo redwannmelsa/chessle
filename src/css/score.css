@@ -3,11 +3,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #090909c9;
+    background-color: #3d3d3d;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     max-width: 500px;
     border-radius: 1rem;
     animation-name: fadeIn;
-    animation-duration: 0.3s;
+    animation-duration: 0.6s;
     margin-top: 0rem;
     padding-bottom: 1rem;
     position: absolute;
@@ -73,6 +74,47 @@ h5 {
 
 .distribution-label {
     font-size: 1.5rem;
+}
+
+.share-container {
+    display: flex;
+    background-color: #538D4E;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    
+}
+
+button {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+ /* The alert message box */
+ .alert {
+    display: none;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #538D4E; 
+    color: white;
+    margin-bottom: 15px;
+    position: absolute;
+    top: -40%;
+    animation-name: pop-up;
+    animation-duration: 0.5s;
+  }
+
+@keyframes pop-up {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;
+    }
 }
 
 @keyframes fadeIn {

@@ -2,34 +2,69 @@ import React, { useState, useEffect } from "react";
 
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
+import { useCookies } from "react-cookie";
 
 import Navbar from './components/Navbar'
 import Checkbox from './components/Checkbox'
-import moveSets from "./openings";
 
 import "./css/App.css";
 
 var checkBoxArray = [];
-var indexOfComputer = 0;
+var indexOfComputer = 2;
 var indexOfPlayer = 0;
 var wrongMoves = 0;
-var gameIndex = Math.floor(Math.random() * 5)
-
-const moveSet = moveSets.ComputerMoveSets[gameIndex]
 
 const App = () => {
 
+
+  const [cookies, setCookie, removeCookie] = useCookies(['gameOver'])
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [game, setGame] = useState(new Chess());
+  const [moveSet, setMoveSet] = useState(null)
   const [checkBox, setCheckBox] = useState([]);
+  const [boardOrientation, setBoardOrientation] = useState(null);
   const [gameActive, setGameActive] = useState(null);
 
+
+
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-  const boardOrientation = 'white'
 
   useEffect(() => {
-    
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Host': 'chess-puzzles.p.rapidapi.com',
+        'X-RapidAPI-Key': '4c1cde3e81msh8f8976e7637759bp14d06cjsn7a3c58b947b1'
+      }
+    };
+    console.log(document.cookie)
+    if (document.cookie !== 'gameOver=true') {
+      fetch('https://chess-puzzles.p.rapidapi.com/?rating=1500&themesType=ALL&playerMoves=4&count=1', options)
+      .then(response => response.json())
+      .then(response => {
+        setGame(new Chess(response.puzzles[0].fen))
+        setMoveSet(response.puzzles[0].moves)
+        console.log(response.puzzles[0].fen.charAt(response.puzzles[0].fen.length - 10))
+        if (response.puzzles[0].fen.charAt(response.puzzles[0].fen.length - 10) === 'w') {
+          setBoardOrientation('black')
+        } else {
+          setBoardOrientation('white')
+        }
+        console.log(boardOrientation)
+        
+      })
+      .catch(err => console.error(err));
+    } else {
+      setIsScoreOpen(true)
+    }
   }, [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      makeFirstMove()
+    }, 2000);
+  }, [moveSet])
+
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -49,9 +84,24 @@ const App = () => {
       }
   }
 
+  async function makeFirstMove() {
+    if(moveSet !== null) {
+      safeGameMutate((game => {
+        game.move({
+          from: moveSet[0].substring(0, 2),
+          to: moveSet[0].substring(2, 4)
+        })
+      }))
+    }
+  }
+
   function makeNewMove() {
-    if (moveSet[indexOfComputer] === 'gameEnd' || wrongMoves === 3) {
+    console.log(moveSet[indexOfComputer])
+    if (moveSet[indexOfComputer] === undefined || wrongMoves === 3) {
       setUserScore();
+      var midnight = new Date();
+      midnight.setHours(23,59,59,0);
+      setCookie('gameOver', true, { expires: midnight, sameSite: true })
       if (localStorage.getItem('gamesWon') !== null) {
         localStorage.setItem('gamesWon', parseInt(localStorage.getItem('gamesWon')) + 1)
       } else {
@@ -64,15 +114,21 @@ const App = () => {
       return setIsScoreOpen(true); // exit if the game is over
     }
     safeGameMutate((game) => {
-      game.move(moveSet[indexOfComputer])
-      indexOfComputer += 1;
+      game.move({
+        from: moveSet[indexOfComputer].substring(0, 2),
+        to: moveSet[indexOfComputer].substring(2, 4)
+      })
+      indexOfComputer += 2;
     })
   }
 
+  const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1)
+
   function onDrop(sourceSquare, targetSquare) {
     let move = null;
-    const playerMoveSet = moveSets.playerMoveSets[gameIndex]
-    if (sourceSquare === playerMoveSet[indexOfPlayer][0] && targetSquare === playerMoveSet[indexOfPlayer][1] && wrongMoves < 3) {
+    const playerSourceSquareMoveSet = every_nth(moveSet.map(s => s.substring(0, 2)), 2)
+    const playerTargetSquareMoveSet = every_nth(moveSet.map(s => s.substring(2, 4)), 2)
+    if (sourceSquare === playerSourceSquareMoveSet[indexOfPlayer] && targetSquare === playerTargetSquareMoveSet[indexOfPlayer] && wrongMoves < 3) {
       safeGameMutate((game) => {
         move = game.move({
           from: sourceSquare,
@@ -103,15 +159,13 @@ const App = () => {
   }
 
   return (
+    
     <div className="App-header">
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
-      <h5>Today's Chessle is:</h5>
-      <h2>{moveSets.nameOfOpening[gameIndex]}</h2>
-      <h3>{moveSets.nameOfVariation[gameIndex]}</h3>
       <div className="board">
         {vw > 600
           ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation}/>
-          : <Chessboard position={game.fen()} onPieceDrop={onDrop} boardWidth={360} />}
+          : <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation} boardWidth={360} />}
       </div>
       <Checkbox checkBox={checkBox} />
     </div>
