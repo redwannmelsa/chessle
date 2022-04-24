@@ -159,7 +159,6 @@ const App = () => {
   }
 
   return (
-    
     <div className="App-header">
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
       <div className="board">
