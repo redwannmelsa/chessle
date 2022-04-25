@@ -4,13 +4,13 @@
     justify-content: center;
     align-items: center;
     background-color: #3d3d3d;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-    max-width: 500px;
+    box-shadow: 0 4px 23px 0 rgba(0, 0, 0, 0.2);
+    width: 350px;
     border-radius: 1rem;
     animation-name: fadeIn;
     animation-duration: 0.6s;
     margin-top: 0rem;
-    padding-bottom: 1rem;
+    padding: 1rem 2rem;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -25,7 +25,7 @@
 .statistic-container {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 0.5rem;
     align-items: center;
 }
 
@@ -78,22 +78,42 @@ h5 {
 
 .share-container {
     display: flex;
-    background-color: #538D4E;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 1rem;
     
 }
 
-button {
+.share-button {
     color: white;
     font-size: 1.2rem;
     font-weight: bold;
+    background: #538D4E !important;
+    padding: 0rem 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.timer-container {
+    font-size: medium;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+.timer {
+    font-size: 2rem;
 }
 
 button:hover {
     cursor: pointer;
 }
+button svg {
+    padding-left: 1rem;
+    margin-top: 0.2rem;
 
+}
  /* The alert message box */
  .alert {
     display: none;
@@ -103,7 +123,7 @@ button:hover {
     color: white;
     margin-bottom: 15px;
     position: absolute;
-    top: -40%;
+    top: -30%;
     animation-name: pop-up;
     animation-duration: 0.5s;
   }
@@ -125,5 +145,11 @@ button:hover {
     to {
         margin-top: 0rem;
         opacity: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 75%;
     }
 }

@@ -1,17 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import '../css/score.css'
 
 const Score = ({ isScoreOpen, setIsScoreOpen }) => {
 
+    const [now, setNow] = useState(new Date())
+
     useEffect(() => {
-        oneErrorPercent()
-    })
+        getGameStats()
+    }, [])
 
     document.body.addEventListener("click", function(e) {
         let el = e.target.className;
-        if (el !== "container" && el !== "statistic-container" && el !== "statistic" && el !== "label" && el !== 'share-container' && el !== 'share-button' && el !== 'svg-inline--fa fa-share-nodes share-button') {
+        let el2 = e.target.tagName;
+        if (el !== "container" && el !== "statistic-container" && el !== "statistic" && el !== "label" && el !== 'share-container' && el !== 'share-button' && el2 !== 'svg' && el2 !== 'path') {
             setIsScoreOpen(false)
         }
     }, true)
@@ -28,7 +31,7 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         }
     }
 
-    const oneErrorPercent = () => {
+    const getGameStats = () => {
         var zeroErrorInt = 0;
         var oneErrorInt = 0;
         var twoErrorsInt = 0;
@@ -47,6 +50,22 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
             }
         }
         return errorValuesArr = [zeroErrorInt, oneErrorInt, twoErrorsInt, threeErrorsInt]
+    }
+
+    const currentStreak = () => {
+        let currentStreakInt = 0;
+        for (let i in JSON.parse(localStorage.getItem('userScore'))) {
+            if (JSON.parse(localStorage.getItem('userScore'))[i].filter(x => x === false).length === 3) {
+                currentStreakInt = 0;
+            } else {
+                currentStreakInt++
+            }
+        }
+        if (localStorage.getItem('userMaxStreak') && parseInt(localStorage.getItem('userMaxStreak')) < currentStreakInt) {
+            localStorage.setItem('userMaxStreak', currentStreakInt)
+            console.log(localStorage.getItem('userMaxStreak'))
+        }
+        return currentStreakInt;
     }
 
     const onShareClick = () => {
@@ -71,25 +90,44 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
         }, 2000);
     }
 
-    const currentStreak = () => {
-        let currentStreakInt = 0;
-        for (let i in JSON.parse(localStorage.getItem('userScore'))) {
-            if (JSON.parse(localStorage.getItem('userScore'))[i].filter(x => x === false).length === 3) {
-                currentStreakInt = 0;
-            } else {
-                currentStreakInt++
-            }
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log('ticking')
+            setNow(new Date());
+        }, 1000)
+
+        return () => { // stops the interval when unmounting the component
+            clearInterval(interval)
         }
-        if (localStorage.getItem('userMaxStreak') && parseInt(localStorage.getItem('userMaxStreak')) < currentStreakInt) {
-            localStorage.setItem('userMaxStreak', currentStreakInt)
-            console.log(localStorage.getItem('userMaxStreak'))
+    }, [setNow])
+
+    const getTimer = () => {
+        var displayedTimer = ''
+        var timer = Math.trunc((document.cookie.split('=')[1] - now)/1000)
+
+        var h = Math.floor(timer / 3600);
+        var m = Math.floor(timer % 3600 / 60);
+        var s = Math.floor(timer % 3600 % 60);
+
+        if (h < 10) {
+            h = '0' + h
         }
-        return currentStreakInt;
+
+        if (m < 10) {
+            m = '0' + m
+        }
+
+        if (s < 10) {
+            s = '0' + s
+        }
+
+        displayedTimer =  h + ':' + m + ':' + s
+        return displayedTimer
     }
 
     return (
         <div className="container">
-            <div class="alert">
+            <div className="alert">
                 Score copied to clipboard!
             </div> 
             <h3>Statistics</h3>
@@ -112,47 +150,55 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
                     <div className="statistic">
                         {currentStreak()}
                     </div>
-                    <div className="label">Current streak</div>
+                    <div className="label">Current<br></br> streak</div>
                 </div>
                 <div className="statistic-container">
                     <div className="statistic">
                         {localStorage.getItem('userMaxStreak')}
                     </div>
-                    <div className="label">Max streak</div>
+                    <div className="label">Max<br></br> streak</div>
                 </div>
             </div>
             <div className="distribution">
                 <h5>Error distribution</h5>
                 <div className="graph-container">
                     <div className="distribution-label">0</div>
-                    <div className="graph-bar" style={{width:oneErrorPercent()[0]/gamesPlayed()*100 + '%'}}>
-                        <div className="num-errors">{oneErrorPercent()[0]}</div>
+                    <div className="graph-bar" style={{width:getGameStats()[0]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{getGameStats()[0]}</div>
                     </div>
                 </div>
                 <div className="graph-container">
                     <div className="distribution-label">1</div>
-                    <div className="graph-bar"  style={{width:oneErrorPercent()[1]/gamesPlayed()*100 + '%'}}>
-                        <div className="num-errors">{oneErrorPercent()[1]}</div>
+                    <div className="graph-bar"  style={{width:getGameStats()[1]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{getGameStats()[1]}</div>
                     </div>
                 </div>
                 <div className="graph-container">
                     <div className="distribution-label">2</div>
-                    <div className="graph-bar"  style={{width:oneErrorPercent()[2]/gamesPlayed()*100 + '%'}}>
-                        <div className="num-errors">{oneErrorPercent()[2]}</div>
+                    <div className="graph-bar"  style={{width:getGameStats()[2]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{getGameStats()[2]}</div>
                     </div>
                 </div>
                 <div className="graph-container">
                     <div className="distribution-label">3</div>
-                    <div className="graph-bar"  style={{width:oneErrorPercent()[3]/gamesPlayed()*100 + '%'}}>
-                        <div className="num-errors">{oneErrorPercent()[3]}</div>
+                    <div className="graph-bar"  style={{width:getGameStats()[3]/gamesPlayed()*100 + '%'}}>
+                        <div className="num-errors">{getGameStats()[3]}</div>
                     </div>
                 </div>
             </div>
-            <div className="share-container">
-                <button class='share-button' onClick={() => onShareClick()}>
+            {document.cookie.split('=')[0] === 'gameOver' ?
+                <div className="share-container">
+                <div className="timer-container">
+                    next Chessle
+                    <div className="timer">{getTimer()}</div>
+                </div>
+                <button className='share-button' onClick={() => onShareClick()}>
                     Share
+                    <FontAwesomeIcon icon={faShareNodes}></FontAwesomeIcon>
                 </button>
-            </div>
+                </div>
+                : null
+            }
         </div>
     )
 }
