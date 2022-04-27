@@ -92,7 +92,6 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            console.log('ticking')
             setNow(new Date());
         }, 1000)
 
@@ -103,11 +102,14 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
 
     const getTimer = () => {
         var displayedTimer = ''
-        var timer = Math.trunc((document.cookie.split('=')[1] - now)/1000)
+        var timer = (Date.parse(midnight) - Date.parse(now))/1000
+        var midnight = new Date();
+        midnight.setHours(23,59,59,0);
+        var midnightToTimeStamp = Date.parse(midnight)
 
-        var h = Math.floor(timer / 3600);
-        var m = Math.floor(timer % 3600 / 60);
-        var s = Math.floor(timer % 3600 % 60);
+        var h = Math.floor((Date.parse(midnight) - Date.parse(now))/1000 / 3600);
+        var m = Math.floor((Date.parse(midnight) - Date.parse(now))/1000 % 3600 / 60);
+        var s = Math.floor((Date.parse(midnight) - Date.parse(now))/1000 % 3600 % 60);
 
         if (h < 10) {
             h = '0' + h
@@ -186,7 +188,7 @@ const Score = ({ isScoreOpen, setIsScoreOpen }) => {
                     </div>
                 </div>
             </div>
-            {document.cookie.split('=')[0] === 'gameOver' ?
+            {localStorage.getItem('gameOver') ?
                 <div className="share-container">
                 <div className="timer-container">
                     next Chessle

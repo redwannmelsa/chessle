@@ -6,7 +6,6 @@ import { useCookies } from "react-cookie";
 
 import Navbar from './components/Navbar'
 import Checkbox from './components/Checkbox'
-import { key } from "./key/key";
 
 import { puzzles } from "./puzzleDb";
 import "./css/App.css";
@@ -15,8 +14,8 @@ var checkBoxArray = [];
 var indexOfComputer = 2;
 var indexOfPlayer = 0;
 var wrongMoves = 0;
-var dailyPuzzle = Math.trunc(Date.now()/ (1000 * 3600 * 24) - 19107);
-// var dailyPuzzle = 97;
+// var dailyPuzzle = Math.trunc(Date.now()/ (1000 * 3600 * 24) - 19107);
+var dailyPuzzle = 3;
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 
 const App = () => {
@@ -30,10 +29,12 @@ const App = () => {
 
   // setting up the daily game on component load
   useEffect(() => {
-    if (document.cookie.split('=')[0] !== 'gameOver') {
+    console.log(localStorage.getItem('gameOver'))
+    console.log(JSON.stringify(dailyPuzzle))
+    if (localStorage.getItem('gameOver') !== JSON.stringify(dailyPuzzle)) {
       setGame(new Chess(puzzles[getDailyPuzzleNumber()].fen))
       setMoveSet(puzzles[getDailyPuzzleNumber()].moves)
-      if (puzzles[getDailyPuzzleNumber()].fen.charAt(puzzles[getDailyPuzzleNumber()].fen.length - 10) === 'w') {
+      if (puzzles[getDailyPuzzleNumber()].fen.charAt(puzzles[getDailyPuzzleNumber()].fen.length - 10) === 'w') { // could use a regex instead -- could pass it directly in the boardoritnetation argument
         setBoardOrientation('black')
       } else {
         setBoardOrientation('white')
@@ -99,10 +100,7 @@ const App = () => {
   function makeNewMove() {
     if (moveSet[indexOfComputer] === undefined || wrongMoves === 3) {
       setUserScore();
-      var midnight = new Date();
-      midnight.setHours(23,59,59,0);
-      var midnightToTimeStamp = Date.parse(midnight)
-      setCookie('gameOver', midnightToTimeStamp, { expires: midnight, sameSite: true }) //setting daily cookie - only one game per day
+      localStorage.setItem('gameOver', dailyPuzzle)
       if (localStorage.getItem('gamesWon') !== null) {
         localStorage.setItem('gamesWon', parseInt(localStorage.getItem('gamesWon')) + 1)
       } else {
@@ -158,6 +156,10 @@ const App = () => {
         wrongMoves++
         if (wrongMoves === 3) {
           setUserScore();
+          var midnight = new Date();
+          midnight.setHours(23,59,59,0);
+          var midnightToTimeStamp = Date.parse(midnight)
+          localStorage.setItem('gameOver', dailyPuzzle) //setting daily cookie - only one game per day
           return setIsScoreOpen(true);
         }
       }

@@ -37,9 +37,18 @@
     [x] card pop up with recap
     [x]    statistics:
     [x]    "guess" distribution
-        next chessle | share
+    [x]    next chessle | share
 
 # odds and ends
 
     [x] add game distribution to the score card
     
+# suggestions
+    add move history
+    darken the last moved square
+    keep final frame on game complete after page refresh
+    add instruction screen
+    add check/checkmate notif (see react chessboard props)
+
+# fixes
+    change cookie to localStorage

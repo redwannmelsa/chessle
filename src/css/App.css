@@ -34,8 +34,8 @@ navbar {
 }
 
 .board {
-  margin-top: 5rem;
-  margin-bottom: 3rem;
+  margin-top: auto;
+  margin-bottom: auto;
   margin-left: auto;
   margin-right: auto;
 }
@@ -73,6 +73,7 @@ h5 {
 
 @media (max-width: 600px) {
   .board {
-    margin-top: 10rem !important;
+    /* margin-top: 10rem !important;
+    margin-bottom: 10rem !important; */
   }
 }
