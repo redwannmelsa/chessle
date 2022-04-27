@@ -44,11 +44,11 @@
     [x] add game distribution to the score card
     
 # suggestions
-    add move history
-    darken the last moved square
+    add move history => chess.history()
+    [x] darken the last moved square
     keep final frame on game complete after page refresh
     add instruction screen
-    add check/checkmate notif (see react chessboard props)
+    add check/checkmate notif (see react chessboard props) => chess.in_check() // chess.in_checkmate()
 
 # fixes
-    change cookie to localStorage
+    change the string check for w/b to regex

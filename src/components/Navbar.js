@@ -1,14 +1,17 @@
 import Score from "./Score";
+import HowToPlay from "./Howtoplay";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRankingStar, faGear } from "@fortawesome/free-solid-svg-icons";
-const Navbar = ({ isScoreOpen, setIsScoreOpen }) => {
+const Navbar = ({ isScoreOpen, setIsScoreOpen, isHowToPlayOpen, setIsHowToPlayOpen }) => {
 
     const showScore = () => {
+        setIsHowToPlayOpen(false)
         setIsScoreOpen(true)
     }
 
     const showSettings = () => {
-        console.log('show settings')
+        setIsScoreOpen(false)
+        setIsHowToPlayOpen(true)
     }
 
     return (
@@ -26,6 +29,11 @@ const Navbar = ({ isScoreOpen, setIsScoreOpen }) => {
             <Score isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen}/>
             : null
         }
+        {/* {
+            isHowToPlayOpen ?
+            <HowToPlay setIsHowToPlayOpen={setIsHowToPlayOpen} />
+            : null
+        } */}
         </>
     )
 }

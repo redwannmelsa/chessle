@@ -14,18 +14,20 @@ var checkBoxArray = [];
 var indexOfComputer = 2;
 var indexOfPlayer = 0;
 var wrongMoves = 0;
-// var dailyPuzzle = Math.trunc(Date.now()/ (1000 * 3600 * 24) - 19107);
-var dailyPuzzle = 3;
+var dailyPuzzle = Math.trunc(Date.now()/ (1000 * 3600 * 24) - 19107);
+// var dailyPuzzle = 3;
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 
 const App = () => {
 
   const [cookies, setCookie, removeCookie] = useCookies(['gameOver'])
   const [isScoreOpen, setIsScoreOpen] = useState(false);
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [game, setGame] = useState(new Chess());
   const [moveSet, setMoveSet] = useState(null)
   const [checkBox, setCheckBox] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState(null);
+  const [moveSquares, setMoveSquares] = useState({});
 
   // setting up the daily game on component load
   useEffect(() => {
@@ -80,6 +82,10 @@ const App = () => {
           to: moveSet[0].substring(2, 4)
         })
       }))
+      setMoveSquares({ // this changes the color of the last computer move
+        [moveSet[0].substring(0, 2)]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' },
+        [moveSet[0].substring(2, 4)]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' }
+      });
     }
   }
 
@@ -117,8 +123,14 @@ const App = () => {
         to: moveSet[indexOfComputer].substring(2, 4),
         promotion: "q" //for simplicity //! this might cause a bug if the solution is to promote something other than queen - don't wanna check
       })
-      indexOfComputer += 2;
     })
+    console.log(moveSet[indexOfComputer].substring(0, 2))
+    console.log(moveSet[indexOfComputer].substring(2, 4))
+    setMoveSquares({ // this changes the color of the last computer move
+      [moveSet[indexOfComputer].substring(0, 2)]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' },
+      [moveSet[indexOfComputer].substring(2, 4)]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' }
+    });
+    indexOfComputer += 2;
   }
 
   const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1) //filters half of the moves (used to get only player moves in object)
@@ -169,10 +181,10 @@ const App = () => {
 
   return (
     <div className="App-header">
-      <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} />
+      <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} isHowToPlayOpen={isHowToPlayOpen} setIsHowToPlayOpen={setIsHowToPlayOpen} />
       <div className="board">
         {vw > 600
-          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation}/>
+          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation} customSquareStyles={{...moveSquares}} />
           : <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation} boardWidth={360} />}
       </div>
       <Checkbox checkBox={checkBox} />
