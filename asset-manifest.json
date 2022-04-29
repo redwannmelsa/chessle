@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/chessle/static/css/main.1e6ddb0c.css",
-    "main.js": "/chessle/static/js/main.f5f786bf.js",
+    "main.css": "/chessle/static/css/main.88a068eb.css",
+    "main.js": "/chessle/static/js/main.2758418e.js",
     "index.html": "/chessle/index.html",
-    "main.1e6ddb0c.css.map": "/chessle/static/css/main.1e6ddb0c.css.map",
-    "main.f5f786bf.js.map": "/chessle/static/js/main.f5f786bf.js.map"
+    "main.88a068eb.css.map": "/chessle/static/css/main.88a068eb.css.map",
+    "main.2758418e.js.map": "/chessle/static/js/main.2758418e.js.map"
   },
   "entrypoints": [
-    "static/css/main.1e6ddb0c.css",
-    "static/js/main.f5f786bf.js"
+    "static/css/main.88a068eb.css",
+    "static/js/main.2758418e.js"
   ]
 }
