@@ -15,6 +15,7 @@ var indexOfComputer = 2;
 var indexOfPlayer = 0;
 var wrongMoves = 0;
 var dailyPuzzle = Math.trunc(Date.now()/ (1000 * 3600 * 24) - 19107);
+var pieceInCheck = ''
 // var dailyPuzzle = 3;
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 
@@ -28,11 +29,10 @@ const App = () => {
   const [checkBox, setCheckBox] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState(null);
   const [moveSquares, setMoveSquares] = useState({});
+  const [checkedSquares, setCheckedSquares] = useState({})
 
   // setting up the daily game on component load
   useEffect(() => {
-    console.log(localStorage.getItem('gameOver'))
-    console.log(JSON.stringify(dailyPuzzle))
     if (localStorage.getItem('gameOver') !== JSON.stringify(dailyPuzzle)) {
       setGame(new Chess(puzzles[getDailyPuzzleNumber()].fen))
       setMoveSet(puzzles[getDailyPuzzleNumber()].moves)
@@ -124,12 +124,14 @@ const App = () => {
         promotion: "q" //for simplicity //! this might cause a bug if the solution is to promote something other than queen - don't wanna check
       })
     })
-    console.log(moveSet[indexOfComputer].substring(0, 2))
-    console.log(moveSet[indexOfComputer].substring(2, 4))
     setMoveSquares({ // this changes the color of the last computer move
       [moveSet[indexOfComputer].substring(0, 2)]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' },
       [moveSet[indexOfComputer].substring(2, 4)]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' }
     });
+    setCheckedSquares({})
+    if (game.in_check) {
+      setCheckedSquares({e3: {backgroundColor: 'pink'}})
+    }
     indexOfComputer += 2;
   }
 
@@ -154,9 +156,14 @@ const App = () => {
         });
       });
       if (move === null) return false; // illegal move
-      setTimeout(makeNewMove, 200); // runs next computer move
+      setTimeout(makeNewMove, 2000); // runs next computer move
       indexOfPlayer++
       checkBoxArray = [...checkBox, true]
+      
+      setCheckedSquares({})
+      if (game.in_check) {
+        return setCheckedSquares({e3: {backgroundColor: 'pink'}})
+      }
       setCheckBox(checkBoxArray) // allowing the checkbox component to update in real time
       return true;
     } else {
@@ -184,7 +191,7 @@ const App = () => {
       <Navbar isScoreOpen={isScoreOpen} setIsScoreOpen={setIsScoreOpen} isHowToPlayOpen={isHowToPlayOpen} setIsHowToPlayOpen={setIsHowToPlayOpen} />
       <div className="board">
         {vw > 600
-          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation} customSquareStyles={{...moveSquares}} />
+          ? <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation} customSquareStyles={{ ...moveSquares, ...checkedSquares }} /> // customsquare syntax => e3: {backgroundColor: 'pink'}
           : <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={boardOrientation} boardWidth={360} />}
       </div>
       <Checkbox checkBox={checkBox} />
